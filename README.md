@@ -1,16 +1,11 @@
-# ai_assistant
+Features👇 :
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Ai Chatbot
+Ai Image Creator/Generator (with OpenAi + Lexica Image Search)
+Ai Multi Language Translator (with OpenAi + Google Translator)
+Uses ChatGpt (Open AI API)
+Custom Light/Dark Mode
+First Time Onboarding or Introducton Screens
+Animations (Text Animation, Lottie, Fading, etc)
+Decent UI with New Material Widgets
+App Write Cloud Integration...

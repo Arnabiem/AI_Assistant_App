@@ -55,11 +55,43 @@ class _ImageFeatureState extends State<ImageFeature> {
             // ai image
             Container(
               height: mq.height *.5,
+              margin: EdgeInsets.symmetric(vertical: mq.height * .015),
               alignment: Alignment.center,
               child: Obx (()=> _aiImage())
               ),
+            //scrolling of images 
+              Obx(() => _c.imageList.isEmpty
+              ? const SizedBox()
+              : SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.only(bottom: mq.height * .03),
+                  physics: const BouncingScrollPhysics(),
+                  child: Wrap(
+                    spacing: 10,
+                    children: _c.imageList
+                        .map((e) => InkWell(
+                              onTap: () {
+                                _c.url.value = e;
+                              },
+                              child: ClipRRect(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(8)),
+                                child: CachedNetworkImage(
+                                  imageUrl: e,
+                                  height: 100,
+                                  errorWidget: (context, url, error) =>
+                                      const SizedBox(),
+                                ),
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                )),
               // create button
-              CustomBtn(onTap:_c.createImage, txt: 'Create',), 
+              // open ai api
+              // CustomBtn(onTap:_c.createImage, txt: 'Create',), 
+              // lexica search api
+              CustomBtn(onTap:_c.searchAiImage, txt: 'Create',), 
         ],
       ),
       // download image
@@ -78,7 +110,7 @@ class _ImageFeatureState extends State<ImageFeature> {
     child: switch(_c.status.value){    
       Status.none => Lottie.asset('assets/Animations/ai_play.json',height: mq.height *.35),
       Status.complete => CachedNetworkImage(
-          imageUrl: _c.url,
+          imageUrl: _c.url.value,
           placeholder: (context, url) => const CustomLoading(),
           errorWidget: (context, url, error) => const Icon(Icons.error),
        ),

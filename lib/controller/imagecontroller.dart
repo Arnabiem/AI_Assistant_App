@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:ai_assistant/api/Api.dart';
 import 'package:ai_assistant/constraints/constants.dart';
 import 'package:ai_assistant/constraints/dialog_box.dart';
 import 'package:dart_openai/dart_openai.dart';
@@ -15,9 +16,11 @@ enum Status{none,loading,complete}
 
 class ImageController extends GetxController{
   final textC=TextEditingController();
-   String url='';
+  // as url is dynamic
+   final url=''.obs;
+   final imageList=<String>[].obs;
   final status=Status.none.obs;
-
+// for generating image using openai api
   Future<void> createImage() async {     
       if(textC.text.trim().isNotEmpty){   
         OpenAI.apiKey =apikey;     
@@ -28,7 +31,7 @@ class ImageController extends GetxController{
             size: OpenAIImageSize.size512,
             responseFormat: OpenAIImageResponseFormat.url,
           );
-          url=image.data[0].url.toString();          
+          url.value=image.data[0].url.toString();          
           status.value=Status.complete;
           
           textC.text='';
@@ -43,13 +46,13 @@ void downloadImage() async {
       MyDialog.showLoadingDialog();
        log('url: $url');
 
-      final bytes = (await get(Uri.parse(url))).bodyBytes;
+      final bytes = (await get(Uri.parse(url.value))).bodyBytes;
       final dir = await getTemporaryDirectory();
       final file = await File('${dir.path}/ai_image.png').writeAsBytes(bytes);
 
       log('filePath: ${file.path}');
       //save image to gallery
-      await GallerySaver.saveImage(url, albumName: appName).then((success) {
+      await GallerySaver.saveImage(url.value, albumName: appName).then((success) {
         //hide loading
         Get.back();
         MyDialog.success('Successfully downloaded to Gallery!');
@@ -69,7 +72,7 @@ void downloadImage() async {
 
       log('url: $url');
 
-      final bytes = (await get(Uri.parse(url))).bodyBytes;
+      final bytes = (await get(Uri.parse(url.value))).bodyBytes;
       final dir = await getTemporaryDirectory();
       final file = await File('${dir.path}/ai_image.png').writeAsBytes(bytes);
 
@@ -89,5 +92,19 @@ void downloadImage() async {
     }
   }
  
- 
+ Future<void> searchAiImage() async {
+    //if prompt is not empty
+    if (textC.text.trim().isNotEmpty) {
+      status.value = Status.loading;
+      imageList.value = await APIs.searchAiImages(textC.text);
+      if (imageList.isEmpty) {
+        MyDialog.error('Something went wrong!!');
+        return;
+      }
+      url.value = imageList.first;
+      status.value = Status.complete;
+    } else {
+      MyDialog.info('Provide some beautiful image description!');
+    }
+  }
 }

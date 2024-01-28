@@ -4,6 +4,7 @@ import 'package:appwrite/appwrite.dart';
 
 import '../constraints/constants.dart';
 
+// appwrite integration 
 class AppWrite {
   static final _client = Client();
   static final _database = Databases(_client);

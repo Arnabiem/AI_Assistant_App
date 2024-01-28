@@ -7,7 +7,7 @@ import 'package:http/http.dart';
 
 class APIs {
   // to get ans from chatgpt
-  static Future<String> getanswer(String question) async {
+  static Future<String> getanswer(String question) async {    
     // post->send data to api
     try {
       final res=await post(Uri.parse("https://api.openai.com/v1/chat/completions"),
@@ -33,6 +33,21 @@ class APIs {
     } catch (e) {
       log('error:$e');
       return 'Something went wrong Please try again later';
+    }
+  }
+// using lexica api for ai image generation(free & fast)
+static Future<List<String>> searchAiImages(String prompt) async {
+    try {
+      final res =
+          await get(Uri.parse('https://lexica.art/api/v1/search?q=$prompt'));
+
+      final data = jsonDecode(res.body);
+
+      
+      return List.from(data['images']).map((e) => e['src'].toString()).toList();
+    } catch (e) {
+      log('searchAiImagesE: $e');
+      return [];
     }
   }
 }
